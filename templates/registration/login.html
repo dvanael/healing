@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+
+{% block content %}
+<div class="container">
+
+  {% if request.user.is_authenticated %}
+    <h3>Ação não permitida!</h3>
+    <p class="lead text-bold">
+      Houve algum problema para processar a ação desejada ou você não tem permissão.</p>
+    <a href="{% url 'index' %}" class="btn btn-secondary"> Voltar Ao Início</a>
+
+  {% else %}
+  <h1>Login</h1>
+  <form action="" method="post">
+    {% csrf_token %}
+
+    {{form.as_p}}
+
+    <button type="submit">LOGAR</button>
+  </form>
+  <a href="{% url "register" %}">Crie uma conta</a>
+
+  {% endif %}
+</div>
+{% endblock content %}

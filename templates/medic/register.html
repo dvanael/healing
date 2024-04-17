@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cadastro Médicop{% endblock title %}
+
+{% block content %}
+<div class="container">
+  <h1>Cadastro Médico</h1>
+  
+  <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button type="submit">Cadastrar</button>
+  </form>
+
+</div>
+{% endblock content %}
