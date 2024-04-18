@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 
 from .utils import is_medic
-from .forms import UserRegisterForm, MedicRegisterForm
+from .forms import UserRegisterForm, MedicRegisterForm, UserLoginForm
 
 from django.contrib.messages import constants
 from django.contrib import messages
@@ -32,6 +32,7 @@ def register(request):
 
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
+        context['form'] = form
         if form.is_valid():
             user = form.save()
             username = form.cleaned_data['username']
@@ -42,6 +43,31 @@ def register(request):
                 return redirect('index')
 
     return render(request, template_name, context)
+
+def login_view(request):
+    template_name = 'registration/login.html'
+    context = {}
+    if request.method == 'GET':
+        form = UserLoginForm()
+        context['form'] = form
+
+    if request.method == 'POST':
+        form = UserLoginForm(request, request.POST)
+        context['form'] = form
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('index')
+            
+    return render(request, template_name, context)
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 
 @login_required
 def medic_register(request):
