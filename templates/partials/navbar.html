@@ -1,0 +1,15 @@
+{% load static %}
+<nav class="navbar navbar-bg">
+  <div class="container-fluid container">
+    <div class="me-auto">
+      <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" class="navbar-brand">
+        <div class="brand-title">HEALING</div>
+      </a>
+    </div>
+
+    <span class="me-3 fw-semibold ">{{request.user}}</span>
+    <a href="{% url 'logout' %}" class="btn">Sair</a>
+    
+  </div>
+</nav>

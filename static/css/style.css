@@ -1,0 +1,215 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+/* cor certa #6DCEF0 */
+
+:root {
+  --main-color: #07bce0;
+  --bg-color: #efefef;
+  --font-color: #121824;
+  --primary-color: #37c2f0;
+  --secondary-color: #d8dee7;
+  --terciary-color:  #81b0be;
+  --low-color: #657586;
+
+
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --main-color: #6DCEF0;
+    --bg-color: #13161d;
+    --font-color: #e6e6e6;
+    --primary-color: #2baedd;
+    --secondary-color: #393f49; 
+    --terciary-color:  #546b79;
+    --low-color: #1f2934;
+
+  }
+}
+
+/* ELEMENTOS */
+*{
+  font-family: 'Poppins';
+  color: var(--font-color);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: .2s all ease-in-out;
+}
+body {
+  background-color: var(--bg-color);
+}
+hr {
+  color: var(--terciary-color);
+  border-width: .3em;
+}
+a {
+  text-decoration: none;
+  color:var(--primary-color);
+  &:hover{
+    color: var(--main-color);
+  }
+}
+::-webkit-scrollbar {
+  width: .3em;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--terciary-color);
+  border-radius: .6em; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-color); 
+}
+
+.btn{
+  background-color: var(--main-color);
+  color: var(--low-color);
+  &:hover{
+    background-color: var(--primary-color);
+    color: var(--low-color)
+  }
+}
+.text-color{
+  color: var(--main-color);
+}
+/* NAVBAR */
+.navbar-bg{
+  background-color: var(--secondary-color);
+}
+.navbar-brand {
+  width: 2em;
+}
+.brand-title {
+  font-family: 'Bungee'; 
+  color: var(--primary-color);
+  font-size: 2rem;
+  &:hover{
+    color: var(--font-color);
+  }
+}
+
+/* LOGIN CADASTRO */
+.login-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 75%;
+  overflow: hidden;
+  background-color: var(--secondary-color);
+  margin-block: 3em;
+  border-radius: 5px;
+  
+  .login-form {
+    padding: 2em;
+    width: 100%;
+  }
+  .img-brand {
+    background-color: var(--terciary-color);
+    width: 50%;
+    height: 110%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+  }
+  .login-title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--main-color);
+    font-family: 'Bungee';
+    img{
+      margin-inline: .3em;
+      width: 1.5em;
+    }
+  }
+  .btn-login {
+    background-color: var(--terciary-color);
+    color: var(--font-color);
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    transition: .2s all ease-in-out;
+    &:hover{
+      color: var(--font-color);
+      background-color: var(--primary-color);
+    }
+  }
+  .login-link {
+    white-space: 10px;
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+  }
+}
+
+/* FORMS */
+.asteriskField {
+  color: transparent
+}
+.form-label {
+  font-weight: 600;
+}
+.form-control {
+  border-color: var(--terciary-color);
+  border-width: 2px;
+  color: var(--font-color);
+  background-color: var(--secondary-color);
+  &:focus{
+    color: var(--font-color);
+    background-color: var(--secondary-color);
+    border-color: var(--primary-color);
+    box-shadow: none;
+  }
+  &::placeholder{
+    color: var(--font-color);
+    opacity: 0.5;
+  }
+}
+.form-select{
+  border-width: 2px;
+  color: var(--font-color);
+  border-color: var(--terciary-color);
+  background-color: var(--secondary-color) !important;
+  &:focus{
+    border-color: var(--primary-color);
+    box-shadow: none;
+  }
+}
+/* CONTEUDO */
+.content-container{
+  display: flex;
+  justify-content: center;
+  margin-block: 2em;
+}
+
+/* RESPONSIVIDADE */
+@media screen and (max-width: 992px) {
+  .login-container{
+    width: 100%;
+  }
+}
+@media screen and (max-width: 768px) {
+  *{
+    font-size: 14px;
+  }
+  .login-container{
+    margin-inline: 4em;
+  }
+  .hidden-mobile{
+    display: none !important;
+  }  
+}
+@media screen and (max-width: 576px) {
+  *{
+    font-size: 12px;
+  }
+
+}

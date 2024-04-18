@@ -1,16 +1,47 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Cadastro{% endblock title %}
-
+{% load crispy_forms_tags %} 
+{% block title %}Cadastre-se{% endblock title %}
+{% block navbar %}{% endblock navbar %}
 {% block content %}
-<div class="container">
-  <h1>Cadastre-se</h1>
-  
-  <form action="" method="post">
-    {% csrf_token %}
-    {{form.as_p}}
-    <button type="submit">Cadastrar</button>
-  </form>
+<div class="container d-flex justify-content-center">
 
+  <div class="login-container">
+    <div class="login-form">
+    
+    <a class="login-title h1" href="{% url 'index' %}">
+      <img src="{% static 'img/logo.png' %}" alt="logo">
+      HEALING
+    </a>
+    <hr>
+    <div class="h2 mb-4">CADASTRE-SE</div>
+    
+    <form action="" method="post">
+      {% csrf_token %} 
+
+      {{ form.username|as_crispy_field }}
+      {{ form.email|as_crispy_field }}
+      <div class="row">
+        <div class="form-group col-md-6">
+          {{ form.first_name|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-6">
+          {{ form.last_name|as_crispy_field }}
+        </div>
+      </div>
+      {{form.password1|as_crispy_field}}
+      {{form.password2|as_crispy_field}}
+      
+      <hr>
+      <button class="btn btn-login align-items-center" type="submit"><div class="fs-4">CRIAR CONTA</div></button>
+      <div class="login-link">Já possui uma conta? <a class="ms-1" href="{% url 'login' %}">Entre agora!</a></div>
+    </form>
+    </div>
+
+  </div>
 </div>
 {% endblock content %}
+
+{% block script %}
+<script src="{% static 'js/show_password.js' %}"></script>
+{% endblock script %}
