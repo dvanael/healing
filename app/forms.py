@@ -2,8 +2,8 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
-
-from .models import MedicalData
+from django.utils import timezone
+from .models import MedicalData, OpenDates
 
 # Cadastro Usuario Form
 class UserRegisterForm(UserCreationForm):
@@ -36,7 +36,10 @@ class UserRegisterForm(UserCreationForm):
         first_name.widget.attrs={'placeholder': 'Digite seu Primeiro Nome'}
         last_name.widget.attrs={'placeholder': 'Digite seu Sobrenome'}
 
-        username.widget.attrs={'placeholder': 'Digite um nome de usuário'}
+        username.widget.attrs={
+            'placeholder': 'Digite um nome de usuário',
+            'autofocus': True,
+        }
         username.help_text = ''
         
         email.widget.attrs={'placeholder': 'Digite seu email'}
@@ -59,7 +62,10 @@ class UserLoginForm(AuthenticationForm):
 
         username =  self.fields['username']
         password = self.fields['password']
-        username.widget.attrs={'placeholder': 'Digite seu nome de usuário'}
+        username.widget.attrs={
+            'placeholder': 'Digite seu nome de usuário',
+            'autofocus': True,
+        }
         password.widget.attrs={'placeholder': 'Digite sua senha'}
 
 
@@ -68,6 +74,9 @@ class MedicRegisterForm(forms.ModelForm):
     class Meta:
         model = MedicalData
         exclude = ('user',)
+        labels = {
+            'consult_price': 'Valor de Consulta (R$)',
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -77,5 +86,12 @@ class MedicRegisterForm(forms.ModelForm):
         self.fields['district'].widget.attrs['placeholder'] = 'Bairro . . .'
         self.fields['number'].widget.attrs['placeholder'] = 'Número . . .'
         self.fields['crm'].widget.attrs['placeholder'] = 'Seu CRM . . .'
+        self.fields['crm'].widget.attrs['value'] = 'CRM/'
         self.fields['cep'].widget.attrs['placeholder'] = 'Seu CEP . . .'
         self.fields['description'].widget.attrs['placeholder'] = 'Descreva sua vocação . . .'
+        
+class OpenDateForm(forms.ModelForm):
+    class Meta:
+        model = OpenDates
+        fields = ('date',)
+        widgets = {'date': forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'})}
