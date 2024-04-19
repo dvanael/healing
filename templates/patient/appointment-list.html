@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Cadastro Hórario{% endblock title %}
+{% block content %}
+<div class="container ">
+  {% if messages %}
+    {% for msg in messages %}
+    <div class="alert {{msg.tags}} alert-dismissible alert-bg fade show mt-3" role="alert">
+      {{msg}}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+  {% endif %}
+  
+  <div class="content-container">
+    <h1>Minhas Consultas</h1>
+    <hr>
+    <div class="">
+      <form action="{% url 'appointment-list' %}" method="get" >
+        <input class="form-control my-2" type="text" name="search" value="{{search}}" id="id_search" placeholder="Buscar Médicos . . .">
+        <div class="d-flex align-items-center ">
+          <input class="form-control w-75 my-2" type="date" name="date" value="{{date}}" id="id_date" placeholder="Data da Consulta" >
+          <button type="submit" class="btn w-25 h-50 mx-auto ">Filtrar</button>
+        </form>
+        <form action="?"><button class="btn" type="submit">Limpar</button></form>
+      </div>
+    </div>
+    <hr>
+    <div class="appointment-list">
+      <table class="table table-hover">
+        <thead class="text-uppercase text-center ">
+          <tr>
+            <th>Médico</th>
+            <th>Status</th>
+            <th>Data</th>
+          </tr>
+        </thead>
+        <tbody class="table-group-divider text-center">
+          {% for appointment in appointments %}
+              <tr>
+                <th>{{ appointment.open_date.doctor.name }}</th>
+                <th>{{appointment.get_status_display}}</th>
+                <th>{{appointment.open_date.date|date}}</th>
+              </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

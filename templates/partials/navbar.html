@@ -1,11 +1,16 @@
 {% load static %}
-<nav class="navbar navbar-bg">
-  <div class="container-fluid container">
-    <div class="me-auto">
-      <a class="navbar-brand d-flex align-items-center" href="{% url 'index' %}">
-        <img src="{% static 'img/logo.png' %}" alt="Logo" class="navbar-brand">
+<nav class="navbar navbar-expand-lg navbar-bg">
+  <div class="container-fluid container  d-flex  align-items-center ">
+    <div class="d-flex me-auto align-items-center">
+      <a class="navbar-brand d-flex" href="{% url 'index' %}">
+        <img src="{% static 'img/logo.png' %}" alt="Logo" class="brand-logo">
         <div class="brand-title">HEALING</div>
       </a>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link " aria-current="page" href="">Explorar</a>
+        </li>
+      </ul>
     </div>
 
     <span class="me-3 fw-semibold ">{{request.user}}</span>

@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css");
 /* cor certa #6DCEF0 */
 
 :root {
-  --main-color: #07bce0;
-  --bg-color: #efefef;
+  --main-color: #03aacf;
+  --main-low-color: #239bc3;
+  --bg-color: #fcfcfc;
   --font-color: #121824;
-  --primary-color: #37c2f0;
+  --primary-color: #07c9d3;
   --secondary-color: #d8dee7;
   --terciary-color:  #81b0be;
   --low-color: #657586;
@@ -16,20 +18,19 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --main-color: #6DCEF0;
+    --main-low-color: #4e95ad;
     --bg-color: #13161d;
     --font-color: #e6e6e6;
     --primary-color: #2baedd;
     --secondary-color: #393f49; 
     --terciary-color:  #546b79;
-    --low-color: #1f2934;
-
+    --low-color: #303a46;
   }
 }
 
 /* ELEMENTOS */
 *{
   font-family: 'Poppins';
-  color: var(--font-color);
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -37,6 +38,7 @@
 }
 body {
   background-color: var(--bg-color);
+  color: var(--font-color);
 }
 hr {
   color: var(--terciary-color);
@@ -44,10 +46,19 @@ hr {
 }
 a {
   text-decoration: none;
-  color:var(--primary-color);
+  color:var(--main-color);
   &:hover{
-    color: var(--main-color);
+    color: var(--main-low-color);
   }
+}
+cite{
+  font-style: italic;
+}
+strong{
+  font-weight: 600;
+}
+i{
+  color: var(--font-color);
 }
 ::-webkit-scrollbar {
   width: .3em;
@@ -66,30 +77,25 @@ a {
   background: var(--secondary-color); 
 }
 
-.btn{
-  background-color: var(--main-color);
-  color: var(--low-color);
-  &:hover{
-    background-color: var(--primary-color);
-    color: var(--low-color)
-  }
-}
 .text-color{
-  color: var(--main-color);
+  color: var(--main-color) !important;
 }
 /* NAVBAR */
 .navbar-bg{
   background-color: var(--secondary-color);
 }
-.navbar-brand {
-  width: 2em;
+.brand-logo {
+  width: 2.3em;
+  margin-right: .5em;
+  object-fit: cover;
+  aspect-ratio: 1/1;
 }
 .brand-title {
   font-family: 'Bungee'; 
-  color: var(--primary-color);
+  color: var(--main-color);
   font-size: 2rem;
   &:hover{
-    color: var(--font-color);
+    color: var(--main-low-color);
   }
 }
 
@@ -130,7 +136,7 @@ a {
     }
   }
   .btn-login {
-    background-color: var(--terciary-color);
+    background-color: var(--main-color);
     color: var(--font-color);
     font-weight: 600;
     display: flex;
@@ -139,7 +145,7 @@ a {
     transition: .2s all ease-in-out;
     &:hover{
       color: var(--font-color);
-      background-color: var(--primary-color);
+      background-color: var(--main-low-color);
     }
   }
   .login-link {
@@ -151,6 +157,15 @@ a {
 }
 
 /* FORMS */
+.btn{
+  background-color: var(--main-color);
+  color: var(--bg-color);
+  transition: .2s all ease-in-out;
+  &:hover{
+    background-color: var(--main-low-color);
+    color: var(--bg-color)
+  }
+}
 .asteriskField {
   color: transparent
 }
@@ -183,11 +198,109 @@ a {
     box-shadow: none;
   }
 }
+.form-check-input {
+  background-color: var(--secondary-color);
+  border-width: 2px;
+  border-color: var(--terciary-color);
+  box-shadow: none !important;
+}
+.form-check-input:checked{
+  background-color: var(--main-color);
+  border-color: var(--main-low-color);
+}
+
 /* CONTEUDO */
-.content-container{
-  display: flex;
-  justify-content: center;
-  margin-block: 2em;
+.content-container {
+  max-width: 650px;
+  margin: 40px auto;
+}
+.speciality-tag{
+  display: inline-block;
+  border-radius: 5px;
+  padding-inline: 2em;
+  padding-block: .1em;
+  margin: .3em;
+  background-color: var(--secondary-color);
+}
+.medic-card{
+  background-color: var(--secondary-color);
+  border-radius: 5px;
+  padding-block: 1.2em;
+  padding-inline: 2em;
+  margin-block: 1.3em;
+  .profile-pic{
+    width: 9em;
+  }
+  .medic-card-info{
+    font-size: 1.1em ;
+  }
+  .speciality-tag{
+    margin: 0;
+    background-color: var(--terciary-color);
+    padding-inline: .5em;
+    padding-block: .1em;
+  }
+}
+
+/* MEDICO */
+.profile-pic{
+  width: 5em;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+
+  border-radius: 75%;
+}
+.date-list{
+  th{
+    font-weight: normal !important;
+  }
+  .table>:not(caption)>*>* {
+    background-color: transparent !important;
+    color: var(--font-color);
+  }
+  tbody, td, tfoot, th, thead, tr {
+    border-color: var(--low-color);
+  }
+}
+
+/* PATIENT */
+.date-card{
+  display: inline-block;
+  width: 48%;
+  background-color: var(--secondary-color);
+  margin-block: .5em;
+  margin-inline: .3em;
+  border-radius: 5px;
+  transition: scale 150ms ease;
+  scale: 1;
+  .date-card-title{
+    border-radius: 5px 5px 0 0;
+    color: var(--bg-color) !important;
+    background-color: var(--main-color);
+    padding: .9em 1.2em ;
+    font-weight: 600;
+  }
+  .date-card-body{
+    color: var(--font-color) !important;
+    text-align: center;
+    padding: .9em 1.2em ;
+  }
+  &:hover{
+    scale: 1.05;
+  }
+}
+.appointment-list{
+  margin-block: 1em;
+  th{
+    font-weight: normal;
+  }
+  .table>:not(caption)>*>* {
+    background-color: var(--secondary-color) !important;
+    color: var(--font-color);
+  }
+  tbody, td, tfoot, th, thead, tr {
+    border-color: var(--low-color);
+  }
 }
 
 /* RESPONSIVIDADE */
