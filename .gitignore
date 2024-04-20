@@ -1,4 +1,10 @@
+# Django auto generated
 __pycache__
 *.sqlite3
-venv
 media
+
+# Enviroment
+venv
+.venv
+env
+.env
