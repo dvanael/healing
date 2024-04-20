@@ -1,28 +1,22 @@
 {% extends "base.html" %}
 {% load static %}
-{% load crispy_forms_tags %}
-{% block title %}Minhas Consultas{% endblock title %}
+{% block title %}Consultas Agendadas{% endblock title %}
 {% block content %}
 <div class="container ">
-  {% if messages %}
-    {% for msg in messages %}
-    <div class="alert {{msg.tags}} alert-dismissible alert-bg fade show mt-3" role="alert">
-      {{msg}}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-  {% endif %}
+
+  {% include 'partials/messages.html' %}
   
   <div class="content-container">
     <h1>Minhas Consultas</h1>
     <div class="">
-      <form action="{% url 'appointment-list' %}" method="get" >
-        <input class="form-control my-2" type="text" name="search" value="{{search}}" id="id_search" placeholder="Buscar Médicos . . .">
+      <form action="{% url 'medic-appointment-list' %}" method="get" >
+        <input class="form-control my-2" type="text" name="search" value="{{search}}" id="id_search" placeholder="Buscar Pacientes . . .">
         <div class="d-flex align-items-center ">
           <input class="form-control w-75 my-2" type="date" name="date" value="{{date}}" id="id_date" placeholder="Data da Consulta" >
           <button type="submit" class="btn w-25 h-50 mx-auto ">Filtrar</button>
         </form>
-        <form action="?"><button class="btn" type="submit">Limpar</button></form>
+        <form action="?"><button class="btn" type="submit">Limpar</button> </form>
+
       </div>
     </div>
     
@@ -30,24 +24,28 @@
 
     <h2>Hoje</h2>
     <div class="appointment-list">
-      <table class="table table-hover">
+      <table class="">
         <thead class="text-uppercase text-center ">
           <tr>
+            <th></th>
             <th>Paciente</th>
             <th>Status</th>
             <th>Horário</th>
           </tr>
         </thead>
-        <tbody class="table-group-divider text-center">
+        <tbody class=" text-center">
           {% for appointment in today %}
               <tr>
+                <th>
+                  <a title="Acessar Consulta" href="{% url 'medic-detail-appointment' appointment.pk %}"><i class="bi bi-search btn"></i></a>
+                </th>
                 <th>{{appointment.patient.get_full_name}}</th>
                 <th>{{appointment.get_status_display}}</th>
                 <th>{{appointment.open_date.date|time}}</th>
               </tr>
               {%empty%}
               <tr>
-                <th  colspan='3'>Sem consultas hoje . . .</th>
+                <th  colspan='5'>Sem consultas hoje . . .</th>
               </tr>
           {% endfor %}
         </tbody>
@@ -57,26 +55,34 @@
     <hr>
     <h2>Todas</h2>
     <div class="appointment-list">
-      <table class="table table-hover">
+      <table class="">
         <thead class="text-uppercase text-center ">
           <tr>
+            <th></th>
             <th>Paciente</th>
             <th>Status</th>
             <th>Data</th>
           </tr>
         </thead>
-        <tbody class="table-group-divider text-center">
+        <tbody class="text-center">
           {% for appointment in appointments %}
               <tr>
+                <th>
+                  <a title="Acessar Consulta" href="{% url 'medic-detail-appointment' appointment.pk %}"><i class="bi bi-search btn"></i></a>
+                </th>
                 <th>{{ appointment.patient.get_full_name }}</th>
                 <th>{{appointment.get_status_display}}</th>
                 <th>{{appointment.open_date.date|date}}</th>
+              </tr>
+              {%empty%}
+              <tr>
+                <th  colspan='4'>Sem consultas agendadas . . .</th>
               </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-
+    <hr>
   </div>
 
 </div>

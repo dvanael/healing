@@ -1,3 +1,4 @@
+import os
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -27,24 +28,25 @@ class MedicalData(models.Model):
     user = models.OneToOneField(User, on_delete=models.DO_NOTHING, verbose_name='Usuário')
     gender = models.CharField(max_length=10, choices=CHOICES, default='none', verbose_name='Gênero')
     speciality = models.ForeignKey(Speciality, on_delete=models.DO_NOTHING, null=True, blank=True, verbose_name='Especialidade')
-    name = models.CharField(max_length=100, verbose_name='Nome')
+    name = models.CharField(max_length=100, verbose_name='Nome Completo')
     profile_pic = models.ImageField(upload_to="profile_pic/", verbose_name='Foto de Perfil')
     street = models.CharField(max_length=100, verbose_name='Rua')
     district = models.CharField(max_length=100, verbose_name='Bairro')
     number = models.IntegerField(verbose_name='Número')
     crm = models.CharField(max_length=30, verbose_name='CRM')
     cep = models.CharField(max_length=15, verbose_name='CEP')
-    rg = models.ImageField(upload_to="rg/", verbose_name='RG')
-    cim = models.ImageField(upload_to='cim/', verbose_name='Cedula Identidade Médica')
+    rg = models.ImageField(upload_to=".rg/", verbose_name='RG')
+    cim = models.ImageField(upload_to='.cim/', verbose_name='Cedula Identidade Médica')
     description = models.TextField(null=True, blank=True, verbose_name='Descrição')
     consult_price = models.DecimalField(max_digits=10, decimal_places=2, default=100, verbose_name='Valor da Consulta')
 
     def __str__(self):
-        return self.user.username
+        return self.name
     
     class Meta:
         verbose_name = 'Medical Data'
         verbose_name_plural = 'Medical Data'
+        ordering = ['-pk']
 
     @property
     def next_date(self):
@@ -59,7 +61,7 @@ class OpenDates(models.Model):
     status = models.BooleanField(default=False)
 
     def __str__(self):
-        return str(self.date)
+        return f'{self.doctor} - {self.date.date()}'
 
     class Meta:
         verbose_name = 'Open Dates'
@@ -80,7 +82,18 @@ class Appointment(models.Model):
     link = models.URLField(null=True, blank=True)
 
     def __str__(self):
-        return self.patient.username
+        return f'{self.patient.get_full_name()} ({self.patient.username}) - {self.open_date.doctor.name}' 
     
     class Meta:
         ordering = ['open_date__date'] 
+
+class Document(models.Model):
+    appointment = models.ForeignKey(Appointment, on_delete=models.DO_NOTHING, verbose_name='Consulta')
+    title = models.CharField(max_length=30, verbose_name='Título')
+    document = models.FileField(upload_to='.documents/', verbose_name='Documento')
+
+    def __str__(self):
+        return self.title
+    
+    class Meta:
+        ordering = ['-pk']

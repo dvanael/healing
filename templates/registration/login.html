@@ -3,8 +3,9 @@
 {% load crispy_forms_tags %}
 {% block title %}Login{% endblock title %}
 {% block navbar %}{% endblock navbar %}
+{% block footer %}{% endblock footer %}
 {% block content %}
-<div class="container d-flex justify-content-center">
+<div class="container justify-center">
 
   {% if request.user.is_authenticated %}
     <h3>Ação não permitida!</h3>
@@ -13,9 +14,9 @@
     <a href="{% url 'index' %}" class="btn"> Voltar Ao Início</a>
 
   {% else %}
-    <div class="login-container">
+    <div class="login-container center-element">
       <div class="login-form">
-        <a class="login-title h1" href="{% url 'index' %}">
+        <a class="login-title center-element h1" href="{% url 'index' %}">
           <img src="{% static 'img/logo.png' %}" alt="logo">
           HEALING
         </a>
@@ -24,22 +25,14 @@
         
         <form action="" method="post">
           {% csrf_token %}{{form|crispy}}
-          {% comment %} <div id="div_id_username" class="mb-3"> <label for="id_username" class="form-label requiredField">
-            Usuário<span class="asteriskField">*</span> </label> 
-            <input type="text" name="username" autofocus="" autocapitalize="none" autocomplete="username" maxlength="150" class="textinput form-control" required="" id="id_username">
-          </div>
-
-            <div id="div_id_password" class="mb-3"> <label for="id_password" class="form-label requiredField">
-              Senha<span class="asteriskField">*</span> </label> <input type="password" name="password" autocomplete="current-password" class="passwordinput form-control" required="" id="id_password">
-            </div> {% endcomment %}
-          <button class="btn btn-login" type="submit"><div class="fs-4">ENTRAR</div></button>
+          <button class="btn btn-login justify-center" type="submit"><div class="fs-4">ENTRAR</div></button>
         </form>
-        <div class="login-link">
+        <div class="login-link justify-center">
           Não possui conta? <a class="ps-1" href="{% url "register" %}">Cadastre-se!</a>
         </div>
       </div>
       
-      <div class="hidden-mobile img-brand">
+      <div class="hidden-mobile img-brand center-element">
         <img src="{% static 'img/ilustration.png' %}" alt="dumb-cat">
       </div>
     </div>
@@ -49,5 +42,5 @@
 {% endblock content %}
 
 {% block script %}
-<script src="{% static 'js/show_password.js' %}"></script>
+<script src="{% static 'js/show-password.js' %}"></script>
 {% endblock script %}

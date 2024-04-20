@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Consulta{% endblock title %}
+{% block content %}
+<div class="container">
+
+  {% include "partials/messages.html" %}
+  
+  <div class="content-container">
+    {% if appointment.status == 'F' %}
+      <div class="alert success " role='alert'>Consulta Finalizada</div>
+    {% elif appointment.status == 'C' %}
+      <div class="alert danger " role='alert'>Consulta Cancelada</div>
+    {% elif appointment.status == 'I' %}
+      <div class="alert info " role='alert'>Consulta Iniciada! Acesse o link</div>
+    {% endif %}
+    
+      <div class="medic-card">
+        <div class="row">
+          <div class="col-3 justify-center">
+            <img class="profile-pic" src="{% static 'img/profile-pic.png' %}" alt="{% static 'img/profile-pic.png' %}">
+          </div>
+          <div class="col-8 ms-2">
+            <div class="fs-4 d-flex">
+              Paciente: <div class="text-color ms-2">{{appointment.patient.get_full_name}}</div> 
+            </div>
+            <div class="my-2 fw-semibold fs-4 ">
+              {{appointment.open_date.date}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="justify-center">
+        <div class="mx-auto fs-4">
+          <i class="bi bi-patch-check-fill text-color mt-1 me-2"></i> Agendada
+        </div>
+        <div class="mx-auto fs-4">
+          <i class="bi bi-patch-check-fill {% if appointment.status == 'F' %}text-color{% endif %} mt-1 me-2"></i> Finalizada
+        </div>
+        <div class="mx-auto fs-4">
+          <i class="bi bi-patch-check-fill mt-1 me-2"></i> Avalidada
+        </div>
+      </div>
+      <hr>
+      <div class="medic-card">
+        <h2>Gerenciar Consulta</h2>
+        <p>No horário da consulta, adiocione o link da chamada para consulta.</p>
+        <form action="{% url 'medic-detail-appointment' appointment.pk %}" method="post">{% csrf_token %}
+          <div class="align-center my-2">
+            {% if appointment.status == 'F' or  appointment.status == 'C' %}
+            <fieldset disabled class="w-70">
+              <input type="url" name="link" value="{% if appointment.link %}{{appointment.link}}{% endif %}" id="id_link" class="form-control" placeholder="Adicione o link da chamada . . .">
+            </fieldset>
+            {% else %}
+            <input type="url" name="link" value="{% if appointment.link %}{{appointment.link}}{% endif %}" id="id_link" class="form-control w-75" placeholder="Adicione o link da chamada . . .">
+            {% endif %}
+            <button type="button" class="btn btn-copy w-auto">Copiar Link</button>
+          </div>
+
+        <div class="d-flex ">
+          {% if appointment.status == 'F' or  appointment.status == 'C' %}
+          <button class="btn btn-lg disabled ">Iniciar</button>
+          {% else %}
+          <button type="submit" class="btn btn-lg">Iniciar</button>
+          {% endif %}
+          </form>
+          <form action="{% url 'close-appointment' appointment.pk %}" method="post">
+            {% csrf_token %}
+            {% if appointment.status == 'F' or appointment.status == 'C' %}
+            <button type="submit" class="btn btn-red btn-lg mx-2 disabled">Finalizar</button>
+            {% else %}
+            <input type="hidden" name="status" value="F">
+            <button type="submit" class="btn btn-red btn-lg mx-2">Finalizar</button>
+            {% endif %}
+          </form>
+        </div>
+      </div>
+
+      <hr>
+      <div class="medic-card">
+        <h2>Detalhes da Consulta</h2>
+        <div class="d-flex my-2">
+          <i class="bi bi-calendar2-week text-color mt-1"></i> 
+          <div class="ms-2"> DATA: <strong>{{appointment.open_date.date|time}} - {{appointment.open_date.date|date}}</strong></div>
+        </div>
+        <button class="btn mt-2">Adicionar ao seu Calendário</button>
+      </div>
+      
+      <hr>
+      <div class="medic-card">
+        <h2>Documentos</h2>
+        <p>Envie os documentos nessários para seu paciente.</p>
+        <form action="{% url 'create-document' appointment.pk %}" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{document_form|crispy}}
+          <button type="submit" class="btn">Adicionar</button>
+        </form>
+        {% if documents %}
+          <hr>
+          <div class="fs-4">Documentos Enviados</div>
+          {% for document in documents %}
+          <a class="doc-file pop" href="{{document.document.url}}" target="_blank">
+            <div class="align-center">
+              <i class="bi bi-file-earmark-medical-fill fs-1 me-2"></i>
+                {{document.title}}
+            </div>
+          </a>
+          {% endfor %}
+
+        {% endif %}
+      </div>
+      
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'js/copy-btn.js' %}"></script>
+{% endblock script %}

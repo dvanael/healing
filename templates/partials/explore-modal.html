@@ -1,0 +1,35 @@
+<div class="modal fade" id="explore-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered ">
+    <div class="modal-content modal-bg-color">
+      <div class="modal-header ">
+        <div class="modal-title fs-3 h1 me-auto " id="exampleModalLabel">Explorar</div>
+        <a type="button" data-bs-dismiss="modal" aria-label="Close"><i class="bi bi-x-lg text-color fs-3"></i></a>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'index' %}" method="get">
+          <div class="d-flex">
+            <input type="text" name="search" value="{{search}}" class="form-control" placeholder="Busque por Médicos . . .">
+            <button type="submit" class="btn"><i class="bi bi-search fs-4"></i></button>
+          </div>
+        </form>
+        <hr>
+        <div class="h5">Aréa do Paciente</div>
+        <div class="d-flex">
+          <a href="{% url 'index' %}" class="nav-link mx-3">Inicio</a>
+          <a href="{% url 'appointment-list' %}" class="nav-link mx-3">Minhas Consultas</a>
+          {% if not is_medic %}
+          <a href="{% url 'medic-register' %}" class="nav-link  mx-3">Sou Médico</a>
+        </div>
+          {% else %}
+        </div>
+        <hr>
+        <div class="h5">Aréa do Médco</div>
+        <div class="d-flex">
+          <a href="{% url 'open-date' %}" class="nav-link mx-3">Abrir Hórarios</a>
+          <a href="{% url 'medic-appointment-list' %}" class="nav-link  mx-3">Consultas Agendadas</a>
+        </div>
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

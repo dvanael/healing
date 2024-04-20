@@ -1,28 +1,23 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Inicio{% endblock title %}
-
 {% block content %}
 <div class="container">
 
-  {% if messages %}
-    {% for msg in messages %}
-    <div class="alert {{msg.tags}} alert-dismissible alert-bg fade show mt-3" role="alert">
-      {{msg}}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-    {% endfor %}
-  {% endif %}
+  {% include 'partials/messages.html' %}
   
   <div class="content-container">
-    <div class="d-flex h1"> Olá, <span class="text-color ms-2"> {{request.user.get_full_name}}</span>.</div>
+    <div class="d-flex h1"> Olá, <div class="text-color ms-2 h1"> {{request.user.get_full_name}}</div>.</div>
     <hr>
     <form action="{% url 'index' %}" method="get">
-      <input type="text" name="search" value="{{search}}" class="form-control" placeholder="Busque por Médicos . . .">
+      <div class="d-flex">
+        <input type="text" name="search" value="{{search}}" class="form-control" placeholder="Busque por Médicos . . .">
+        <button type="submit" class="btn me-2 w-25"> <i class="bi bi-search"></i> Filtrar</button>
+      </div>
       
-      <div class="my-3 ms-1">
+      <div class="my-3">
         {% for speciality in specialities %}
-        <div class="form-check speciality-tag">
+        <div class="form-check speciality-tag pointer pop">
           <input class="form-check-input" name="specialities" type="checkbox" value="{{speciality.pk}}" id="id_speciality_{{speciality.pk}}" {% if speciality.pk|stringformat:"s" in spec_filter|stringformat:"s" %}checked{% endif %}>
           <label class="form-check-label" for="id_speciality_{{ speciality.pk }}">
             {{speciality.name}}
@@ -30,27 +25,27 @@
         </div>
         {% endfor %}
       </div>
-      <button type="submit" class="btn">Filtrar</button>
     </form>
+    <form action="?"><button class="btn w-25" type="submit">Limpar</button> </form>
     
     <hr>
     {% if doctors %}
       {% for doctor in doctors %}
         <div class="medic-card">
           <div class="row">
-            <div class="col-3 d-flex justify-content-center">
+            <div class="col-3 justify-center">
               <img class="profile-pic" src="{{doctor.profile_pic.url}}" alt="{{doctor.profile_pic.url}}">
             </div>
-            <div class="col-9">
-              <div class="fs-4 ms">
+            <div class="col-8 ms-2">
+              <div class="fs-4">
                 {% if doctor.gender == 'fem' %}Dra.{% endif %}
                 {% if doctor.gender == 'masc' %}Dr.{% endif %}
                 {% if doctor.gender == 'nb' %}Dre.{% endif %}
                 {% if doctor.gender == 'none' %}{% endif %}
                 {{doctor.name}} 
-                <i class="bi bi-patch-check-fill text-info h4 mt-1 ms-2"></i>
+                <i class="bi bi-patch-check-fill text-color h4 mt-1 ms-2"></i>
               </div> 
-              <div class="d-inline-block align-items-center ">
+              <div class="d-inline-block align-items-center">
                 <div class="speciality-tag"> {% if doctor.speciality %}{{doctor.speciality}}{% else %}Sem Especialidade{% endif %}</div> <i class="bi bi-quote fs-3 mb-2"></i><cite>{{doctor.description}}</cite>
               </div>
             </div>
@@ -62,7 +57,11 @@
             <div class="d-flex my-2">
               <i class="bi bi-calendar2-week text-color mt-1"></i> <div class="ms-2">Próx. Data: <strong>{% if doctor.next_date %}{{doctor.next_date}}{% else %}Nenhuma data disponível{% endif %}</strong></div>
             </div>
+            {% if doctor.next_date == None %}
+            <a href="{% url 'choose-time' doctor.pk %}" class="btn mt-2 disabled ">Agendar</a>
+            {% else %}
             <a href="{% url 'choose-time' doctor.pk %}" class="btn mt-2">Agendar</a>
+            {% endif %}
           </div>
         </div>
       
@@ -70,10 +69,9 @@
       
       {% else %}
       <div class="text-center h3">Não foi possível encontrar Médicos</div>
-      <div class="d-flex justify-content-center">
-        <img class="" src="{% static 'img/dumb-cat.png' %}" alt="dumb-cat.png">
+      <div class="justify-center">
+        <img class="w-25 my-3" src="{% static 'img/dumb-cat.png' %}" alt="dumb-cat.png">
       </div>
-      <div class="text-center h1">. . .</div>
     {% endif %}
   </div>
 </div>

@@ -2,8 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.core.exceptions import ValidationError
-from django.utils import timezone
-from .models import MedicalData, OpenDates
+from .models import MedicalData, OpenDates, Document
 
 # Cadastro Usuario Form
 class UserRegisterForm(UserCreationForm):
@@ -88,10 +87,16 @@ class MedicRegisterForm(forms.ModelForm):
         self.fields['crm'].widget.attrs['placeholder'] = 'Seu CRM . . .'
         self.fields['crm'].widget.attrs['value'] = 'CRM/'
         self.fields['cep'].widget.attrs['placeholder'] = 'Seu CEP . . .'
-        self.fields['description'].widget.attrs['placeholder'] = 'Descreva sua vocação . . .'
+        self.fields['description'].widget.attrs['placeholder'] = 'Descreva sua especialidade . . .'
         
 class OpenDateForm(forms.ModelForm):
     class Meta:
         model = OpenDates
         fields = ('date',)
         widgets = {'date': forms.widgets.DateTimeInput(attrs={'type': 'datetime-local'})}
+
+class DocumentForm(forms.ModelForm):
+    
+    class Meta:
+        model = Document
+        fields = ('title', 'document',)

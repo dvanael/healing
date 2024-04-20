@@ -5,60 +5,59 @@
 {% block content %}
 <div class="container">
   <div class="content-container">
+    <h1>Cadastro Médico</h1>
+    <hr>
+    <div class="d-flex fs-3">Olá, <div class="ms-2 fs-3 text-color">{{request.user.get_full_name}}</div>.</div>
+    <div class="fs-3">Vamos fazer seu casdastro médico!</div>
+    <hr>
+    <form action="{% url 'medic-register' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="row">
+        <div class="form-group col-md-7">
+          {{ form.crm|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-5">
+          {{ form.cim|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-7">
+          {{ form.name|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-5">
+          {{ form.gender|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-5">
+          {{ form.cep|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-7">
+          {{ form.street|as_crispy_field }}
+        </div>
+      </div>
+      <div class="row">
+        <div class="form-group col-md-7">
+          {{ form.district|as_crispy_field }}
+        </div>
+        <div class="form-group col-md-5">
+          {{ form.number|as_crispy_field }}
+        </div>
+      </div>
+      {{form.rg|as_crispy_field}}
+      {{form.profile_pic|as_crispy_field}}
+      <div class="row">
+        <div class="form-group col-md-7">
+          {{form.speciality|as_crispy_field}}
+        </div>
+        <div class="form-group col-md-5">
+          {{ form.consult_price|as_crispy_field }}
+        </div>
+      </div>
+      {{form.description|as_crispy_field}}
 
-        <h1>Cadastro Médico</h1>
-        <hr>
-        <div class="d-flex fs-3">Olá, <div class="ms-2 text-color">{{request.user.get_full_name}}</div>.</div>
-        <div class="fs-3">Vamos fazer seu casdastro médico!</div>
-        <hr>
-        <form action="{% url 'medic-register' %}" method="post" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="row">
-            <div class="form-group col-md-7">
-              {{ form.crm|as_crispy_field }}
-            </div>
-            <div class="form-group col-md-5">
-              {{ form.cim|as_crispy_field }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-7">
-              {{ form.name|as_crispy_field }}
-            </div>
-            <div class="form-group col-md-5">
-              {{ form.gender|as_crispy_field }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-5">
-              {{ form.cep|as_crispy_field }}
-            </div>
-            <div class="form-group col-md-7">
-              {{ form.street|as_crispy_field }}
-            </div>
-          </div>
-          <div class="row">
-            <div class="form-group col-md-7">
-              {{ form.district|as_crispy_field }}
-            </div>
-            <div class="form-group col-md-5">
-              {{ form.number|as_crispy_field }}
-            </div>
-          </div>
-          {{form.rg|as_crispy_field}}
-          {{form.profile_pic|as_crispy_field}}
-          <div class="row">
-            <div class="form-group col-md-7">
-              {{form.speciality|as_crispy_field}}
-            </div>
-            <div class="form-group col-md-5">
-              {{ form.consult_price|as_crispy_field }}
-            </div>
-          </div>
-          {{form.description|as_crispy_field}}
-
-          <button class="btn w-100 fs-4 fw-semibold" type="submit">CADASTRAR</button>
-        </form>
+      <button class="btn w-100 fs-4 fw-semibold" type="submit">CADASTRAR</button>
+    </form>
 
 </div>
 {% endblock content %}
@@ -71,4 +70,6 @@
     $('#id_number').mask('0000');
   })
 </script>
+
+<script src="{% static 'js/drop-img.js' %}"></script>
 {% endblock script %} 

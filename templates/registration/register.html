@@ -3,13 +3,14 @@
 {% load crispy_forms_tags %} 
 {% block title %}Cadastre-se{% endblock title %}
 {% block navbar %}{% endblock navbar %}
+{% block footer %}{% endblock footer %}
 {% block content %}
-<div class="container d-flex justify-content-center">
+<div class="container justify-center">
 
   <div class="login-container content-container">
     <div class="login-form">
     
-      <a class="login-title h1" href="{% url 'index' %}">
+      <a class="login-title justify-center h1" href="{% url 'index' %}">
         <img src="{% static 'img/logo.png' %}" alt="logo">
         HEALING
       </a>
@@ -33,8 +34,8 @@
         {{form.password2|as_crispy_field}}
         
         <hr>
-        <button class="btn btn-login align-items-center" type="submit"><div class="fs-4">CRIAR CONTA</div></button>
-        <div class="login-link">Já possui uma conta? <a class="ms-1" href="{% url 'login' %}">Entre agora!</a></div>
+        <button class="btn btn-login" type="submit"><div class="fs-4">CRIAR CONTA</div></button>
+        <div class="login-link justify-center">Já possui uma conta? <a class="ms-1" href="{% url 'login' %}">Entre agora!</a></div>
       </form>
     </div>
 
@@ -43,5 +44,5 @@
 {% endblock content %}
 
 {% block script %}
-<script src="{% static 'js/show_password.js' %}"></script>
+<script src="{% static 'js/show-password.js' %}"></script>
 {% endblock script %}

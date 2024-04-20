@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Consulta{% endblock title %}
+{% block content %}
+<div class="container">
+  <div class="content-container">
+
+    {% if appointment.status == 'F' %}
+      <div class="alert success" role='alert'>Consulta Finalizada</div>
+    {% elif appointment.status == 'C' %}
+      <div class="alert warning" role='alert'>Consulta Cancelada</div>
+    {% elif appointment.status == 'I' %}
+      <div class="alert info" role='alert'>Consulta Iniciada! Acesse o link.</div>
+    {% endif %}
+    
+      <div class="medic-card">
+        <div class="row">
+          <div class="col-3 justify-center">
+            <img class="profile-pic" src="{{doctor.profile_pic.url}}" alt="{{doctor.profile_pic.url}}">
+          </div>
+          <div class="col-8 ms-2">
+            <div class="fs-4">
+              {% if doctor.gender == 'fem' %}Dra.{% endif %}
+              {% if doctor.gender == 'masc' %}Dr.{% endif %}
+              {% if doctor.gender == 'nb' %}Dre.{% endif %}
+              {% if doctor.gender == 'none' %}{% endif %}
+              {{doctor.name}} 
+              <i class="bi bi-patch-check-fill text-color h4 mt-1 ms-2"></i>
+            </div> 
+            <div class="d-inline-block align-items-center my-2">
+              <div class="speciality-tag"> {% if doctor.speciality %}{{doctor.speciality}}{% else %}Sem Especialidade{% endif %}</div>
+               {% comment %} <i class="bi bi-quote fs-3 mb-2"></i><cite>{{doctor.description}}</cite> {% endcomment %}
+            </div>
+            <div class="my-2 fw-semibold fs-4 ">
+              {{appointment.open_date.date}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr>
+      <div class="justify-center">
+        <div class="mx-auto fs-4">
+          <i class="bi bi-patch-check-fill text-color mt-1 me-2"></i> Agendada
+        </div>
+        <div class="mx-auto fs-4">
+          <i class="bi bi-patch-check-fill {% if appointment.status == 'F' %}text-color{% endif %} mt-1 me-2"></i> Finalizada
+        </div>
+        <div class="mx-auto fs-4">
+          <i class="bi bi-patch-check-fill mt-1 me-2"></i> Avalidada
+        </div>
+      </div>
+      <hr>
+      <div class="medic-card">
+        <h2>Como Acessar</h2>
+        <p>No horário da consulta, acesse o link disponivel abaixo.</p>
+        <div class="align-center">
+          <div class="me-2">
+            {% if appointment.status == 'I' and appointment.link %}
+            <a href="{{appointment.link}}" target="_blank" class="btn">ACESSAR CONSULTA</a>
+            {% else %}
+            <a href="" class="btn disabled ">ACESSAR CONSULTA</a>
+            {% endif %}
+          </div>
+  
+          {% if appointment.status == 'A' or appointment.status == 'I' %}
+          <form action="{% url 'close-appointment' appointment.pk %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="status" value="C">
+              <button type="submit" class="btn btn-red">Cancelar Consulta</button>
+          </form>
+          {% else %}
+          
+          <button type="submit" class="btn disabled my-1">Cancelar Consulta</button>
+          {% endif %}
+        </div>
+      </div>
+
+      <hr>
+      <div class="medic-card">
+        <h2>Detalhes da Consulta</h2>
+        <div class="d-flex my-2">
+          <i class="bi bi-calendar2-week text-color mt-1"></i> <div class="ms-2"><strong>{{appointment.open_date.date|time}} - {{appointment.open_date.date|date}}</strong></div>
+        </div>
+
+        <div class="d-flex my-2">
+          <i class="bi bi-cash-stack text-color mt-1"></i> <div class="ms-2"><strong>R$ {{doctor.consult_price}}</strong></div>
+        </div>
+
+        <button class="btn mt-2">Adicionar ao seu Calendário</button>
+      </div>
+      {% if documents %}
+      <div class="medic-card">
+        <h2>Documentos Enviados</h2>
+        <hr>
+          {% for document in documents %}
+          <a class="doc-file pop" href="{{document.document.url}}" target="_blank">
+            <div class="align-center">
+              <i class="bi bi-file-earmark-medical-fill fs-1 me-2"></i>
+                {{document.title}}
+            </div>
+          </a>
+          {% endfor %}
+      </div>
+      {% endif %}
+
+  </div>
+</div>
+
+{% endblock %}

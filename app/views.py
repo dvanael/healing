@@ -3,9 +3,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
-from .utils import is_medic
-from .forms import UserRegisterForm, MedicRegisterForm, UserLoginForm, OpenDateForm
-from .models import MedicalData, OpenDates, Speciality, Appointment
+from .utils import is_medic, secure_redirect
+from .forms import UserRegisterForm, MedicRegisterForm, UserLoginForm, OpenDateForm, DocumentForm
+from .models import MedicalData, OpenDates, Speciality, Appointment, Document
 
 from django.contrib.messages import constants
 from django.contrib import messages
@@ -66,9 +66,7 @@ def login_view(request):
     context = {}
 
     if request.user.is_authenticated:
-        messages.add_message(request, constants.WARNING, "Você não pode acessar essa página")
-        return redirect('index')
-
+        secure_redirect(request)
 
     if request.method == 'GET':
         form = UserLoginForm()
@@ -110,7 +108,6 @@ def medic_register(request):
         form = MedicRegisterForm(request.POST, request.FILES)
         context['form'] = form
         form.instance.user = user
-        print(form.is_valid())
         if form.is_valid():
             form.save()
             messages.add_message(request, constants.SUCCESS, "Cadastro Médico realizado com sucesso!")
@@ -120,18 +117,17 @@ def medic_register(request):
 
 @login_required
 def create_date(request):
-    template_name = 'medic/open-date.html'
+    template_name = 'medic/create-date.html'
     context = {}
     user = request.user
 
     if not is_medic(user):
-        messages.add_message(request, constants.WARNING, "Você não pode acessar essa página")
-        return redirect('index')
+        return secure_redirect(request)
     
     if request.method == 'GET':
         form = OpenDateForm()
         medic_data = get_object_or_404(MedicalData, user=user)
-        open_dates = OpenDates.objects.filter(doctor__user=user)
+        open_dates = OpenDates.objects.filter(doctor__user=user).filter(date__gt=timezone.now())
         
         context['medic_data'] = medic_data
         context['dates'] = open_dates
@@ -155,13 +151,18 @@ def create_date(request):
             return redirect('open-date')
         
 def delete_date(request, pk):
+    user = request.user
     date = get_object_or_404(OpenDates, pk=pk)
+    
+    if not is_medic(user) or user!=date.doctor.user:
+        return secure_redirect(request)
+
     date.delete()
     messages.add_message(request, constants.WARNING, "Horário deletado com sucesso!")
     return redirect('open-date')
 
 def view_date(request, pk):
-    template_name = 'patient/choose-time.html'
+    template_name = 'patient/date-view.html'
     context = {}
 
     if request.method == 'GET':
@@ -188,7 +189,7 @@ def create_appointment(request, pk):
     return render(request)
 
 def appointment_list(request):
-    template_name = 'patient/appointment-list.html'
+    template_name = 'patient/appointment/list.html'
     user = request.user
     
     appointments = Appointment.objects.filter(patient=user)
@@ -213,14 +214,22 @@ def appointment_list(request):
     return render(request, template_name, context)
 
 def medic_appointment_list(request):
-    template_name = 'medic/appointment-list.html'
+    template_name = 'medic/appointment/list.html'
     user = request.user
+    appointments = Appointment.objects.filter(open_date__doctor__user=user)
 
     if not is_medic(user):
-        messages.add_message(request, constants.WARNING, "Você não pode acessar essa página")
-        return redirect('appointment-list')
+        return secure_redirect(request)
     
-    appointments = Appointment.objects.filter(open_date__doctor__user=user)
+    if request.method == 'GET':
+        patient_filter = request.GET.get('search', '')
+        date_filter = request.GET.get('date', '')
+
+    if patient_filter:
+        appointments = appointments.filter(patient__first_name__icontains=patient_filter)
+    
+    if date_filter:
+        appointments = appointments.filter(open_date__date__date=date_filter)
 
     today = timezone.localdate()
     today_appointments = appointments.filter(open_date__date__date=today)
@@ -228,6 +237,90 @@ def medic_appointment_list(request):
     context = {
         'appointments': appointments,
         'today': today_appointments,
+        'date': date_filter,
+        'search': patient_filter,
     }
 
     return render(request, template_name, context)
+
+def detail_appointment(request, pk):
+    template_name = 'patient/appointment/detail.html'
+    user = request.user
+    appointment = get_object_or_404(Appointment, pk=pk)
+    documents = Document.objects.filter(appointment=appointment.pk)
+    
+    if user != appointment.patient:
+        return secure_redirect(request)
+
+    if request.method == 'GET':
+        doctor = get_object_or_404(MedicalData, user=appointment.open_date.doctor.user)
+        context = {
+            'appointment': appointment,
+            'doctor': doctor,
+            'documents': documents,
+        }
+    return render(request, template_name, context)
+
+def medic_detail_appointment(request, pk):
+    template_name = 'medic/appointment/detail.html'
+    user = request.user
+    appointment = get_object_or_404(Appointment, pk=pk)
+
+    document_form = DocumentForm()
+    documents = Document.objects.filter(appointment=appointment.pk)
+    
+    if not is_medic(user) or user != appointment.open_date.doctor.user:
+        return secure_redirect(request)
+    
+    if request.method == 'POST':
+        link = request.POST['link']
+        appointment.link = link
+        appointment.status = 'I'
+        appointment.save()
+    
+    context = {
+        'appointment': appointment,
+        'document_form': document_form,
+        'documents': documents,
+    }
+
+    return render(request, template_name, context)
+
+def close_appointment(request, pk):
+    user = request.user
+    appointment = get_object_or_404(Appointment, pk=pk)
+
+    if not is_medic(user) or user!=appointment.open_date.doctor.user:
+        return secure_redirect(request)
+    
+    if appointment.status == 'F' or appointment.status == 'C':
+        messages.add_message(request, constants.WARNING, "Essa consulta já foi fechada")
+        return redirect('medic-detail-appointment', pk=appointment.pk)
+    
+    if request.method == 'POST':
+        if request.POST['status']:
+            status = request.POST['status']
+            appointment.status = status 
+            appointment.save()
+
+    return redirect('medic-detail-appointment', pk=appointment.pk)
+
+
+def create_document(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk)
+    user = request.user
+
+    if not is_medic(user) or user!=appointment.open_date.doctor.user:
+        return secure_redirect(request)
+    
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.instance.appointment = appointment
+            form.save()
+            messages.add_message(request, constants.SUCCESS, "Documento adicionado com sucesso!")
+        
+        if not form.is_valid():
+            messages.add_message(request, constants.ERROR, "Coloque o documento e título no fórmulario")
+        
+        return redirect('medic-detail-appointment', pk=pk)
