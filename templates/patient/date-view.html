@@ -34,6 +34,9 @@
           </div>
         </div>
       </div>
+      <div class="text-center ">
+        Busque por outros profissionais com essa <a href="{% url 'index' %}?specialities={{doctor.speciality.pk}}" class="">especialidade.</a>
+      </div>
     {% endif %}
     <hr>
     {% if open_dates %}
